@@ -1,0 +1,436 @@
+@import "tailwindcss";
+
+:root {
+  --background: #f4efe6;
+  --foreground: #2c2825;
+  --charcoal: #3a3632;
+  --charcoal-light: #6b6560;
+  --paper: #fdfbf7;
+  --pencil: #4a4440;
+  --pencil-light: rgba(74,68,64,0.35);
+  --brown-body: #5c3d2e;
+  --brown-dark: #3e2518;
+  --brown-light: #7a5540;
+  --crayon-red: #c23b33;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-poppins);
+  --font-mono: var(--font-geist-mono);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: "Poppins", sans-serif;
+}
+
+/* 1. FULL-SCREEN PAPER GRAIN */
+.paper-noise { position: relative; }
+.paper-noise::before {
+  content: "";
+  position: fixed; inset: 0; z-index: 0;
+  pointer-events: none; opacity: 0.07;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='pn'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='6' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23pn)'/%3E%3C/svg%3E");
+  background-size: 250px 250px;
+  mix-blend-mode: multiply;
+}
+
+/* 2. DOUBLE-LINE PENCIL BORDER — circular */
+.pencil-double { position: relative; }
+.pencil-double::before {
+  content: "";
+  position: absolute; inset: -1px;
+  border: 1.8px solid var(--pencil);
+  border-radius: 48% 52% 50% 50% / 50% 48% 52% 50%;
+  pointer-events: none; z-index: 2; opacity: 0.45;
+  filter: url(#pencil-wobble);
+}
+.pencil-double::after {
+  content: "";
+  position: absolute; inset: -2.5px 0px 0px -2px;
+  border: 1.2px solid var(--pencil);
+  border-radius: 50% 48% 52% 49% / 49% 52% 48% 51%;
+  pointer-events: none; z-index: 2; opacity: 0.3;
+  filter: url(#pencil-wobble);
+}
+
+/* DOUBLE-LINE — rectangular (camera body, viewfinder) */
+.pencil-double-rect { position: relative; }
+.pencil-double-rect::before {
+  content: "";
+  position: absolute; inset: -1px;
+  border: 2px solid var(--pencil);
+  border-radius: 16px 18px 17px 15px / 15px 16px 18px 17px;
+  pointer-events: none; z-index: 2; opacity: 0.5;
+  filter: url(#pencil-wobble);
+}
+.pencil-double-rect::after {
+  content: "";
+  position: absolute; inset: -3px 0px -1px -2px;
+  border: 1.2px solid var(--pencil);
+  border-radius: 18px 15px 19px 16px / 17px 18px 15px 19px;
+  pointer-events: none; z-index: 2; opacity: 0.28;
+  filter: url(#pencil-wobble);
+}
+
+/* DOUBLE-LINE — thin (small elements) */
+.pencil-double-thin { position: relative; }
+.pencil-double-thin::before {
+  content: "";
+  position: absolute; inset: -1px;
+  border: 1.2px solid var(--pencil);
+  border-radius: inherit;
+  pointer-events: none; z-index: 2; opacity: 0.45;
+  filter: url(#pencil-wobble);
+}
+.pencil-double-thin::after {
+  content: "";
+  position: absolute; inset: -2px 0px 0px -1.5px;
+  border: 0.8px solid var(--pencil);
+  border-radius: inherit;
+  pointer-events: none; z-index: 2; opacity: 0.25;
+  filter: url(#pencil-wobble);
+}
+
+/* 3. COLORED-PENCIL RED BUTTON */
+.crayon-red-btn {
+  position: relative;
+  background: var(--crayon-red);
+  border-radius: 48% 52% 46% 54% / 50% 45% 55% 50%;
+  background-image:
+    radial-gradient(ellipse at 35% 40%, rgba(255,255,255,0.15) 0%, transparent 60%),
+    radial-gradient(ellipse at 65% 70%, rgba(0,0,0,0.1) 0%, transparent 50%);
+  transition: transform 0.15s ease, filter 0.15s ease;
+  cursor: pointer;
+}
+.crayon-red-btn:hover:not(:disabled) { transform: scale(1.15); filter: brightness(1.12); }
+.crayon-red-btn:active { transform: scale(0.9); }
+.crayon-red-btn:disabled { opacity: 0.2; cursor: not-allowed; }
+.crayon-red-btn::before {
+  content: "";
+  position: absolute; inset: -2px;
+  border: 2px solid #8b2820;
+  border-radius: 50% 46% 52% 48% / 48% 52% 46% 50%;
+  pointer-events: none; opacity: 0.5;
+  filter: url(#pencil-wobble);
+}
+.crayon-red-btn::after {
+  content: "";
+  position: absolute; inset: -3.5px -1px -1px -3px;
+  border: 1.2px solid #9e3028;
+  border-radius: 46% 54% 48% 52% / 52% 48% 54% 46%;
+  pointer-events: none; opacity: 0.3;
+  filter: url(#pencil-wobble);
+}
+
+/* 4. COLORED-PENCIL CAMERA BODY FILL */
+.camera-body-fill {
+  background: linear-gradient(165deg, var(--brown-light) 0%, var(--brown-body) 40%, var(--brown-dark) 100%);
+  position: relative;
+}
+.camera-body-fill > .crayon-texture {
+  position: absolute; inset: 0;
+  border-radius: inherit; pointer-events: none; z-index: 1;
+  opacity: 0.12;
+  background-image:
+    repeating-linear-gradient(-35deg, transparent 0px, transparent 2px, rgba(255,255,255,0.08) 2px, rgba(255,255,255,0.08) 3px),
+    repeating-linear-gradient(-33deg, transparent 0px, transparent 4px, rgba(0,0,0,0.06) 4px, rgba(0,0,0,0.06) 5px);
+  mix-blend-mode: overlay;
+}
+.camera-body-fill > .grain-overlay {
+  position: absolute; inset: 0;
+  border-radius: inherit; pointer-events: none; z-index: 1;
+  opacity: 0.06;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 150px 150px;
+  mix-blend-mode: multiply;
+}
+
+/* 5. CAMERA SKETCH DOODLES */
+.camera-sketch { position: relative; }
+.camera-sketch > .doodle-lines {
+  position: absolute; inset: -20px -24px;
+  pointer-events: none; z-index: 0;
+  background-image:
+    linear-gradient(135deg, var(--pencil-light) 0px, var(--pencil-light) 1px, transparent 1px),
+    linear-gradient(225deg, var(--pencil-light) 0px, var(--pencil-light) 1px, transparent 1px),
+    linear-gradient(45deg, var(--pencil-light) 0px, var(--pencil-light) 1px, transparent 1px),
+    linear-gradient(315deg, var(--pencil-light) 0px, var(--pencil-light) 1px, transparent 1px);
+  background-position: -14px -10px, calc(100% + 10px) -8px, -12px calc(100% + 6px), calc(100% + 8px) calc(100% + 4px);
+  background-size: 20px 20px, 16px 16px, 18px 18px, 14px 14px;
+  background-repeat: no-repeat;
+}
+
+/* 6. WOBBLE JIGGLE on capture */
+@keyframes sketch-jiggle {
+  0%   { transform: translate(0, 0) rotate(0deg); }
+  15%  { transform: translate(-1px, 0.5px) rotate(-0.3deg); }
+  30%  { transform: translate(1px, -0.5px) rotate(0.4deg); }
+  45%  { transform: translate(-0.5px, 0.5px) rotate(-0.2deg); }
+  60%  { transform: translate(0.5px, -0.3px) rotate(0.15deg); }
+  80%  { transform: translate(-0.3px, 0.2px) rotate(-0.1deg); }
+  100% { transform: translate(0, 0) rotate(0deg); }
+}
+.animate-sketch-jiggle {
+  animation: sketch-jiggle 0.5s ease-out forwards;
+}
+
+/* 7. POLAROID EJECT */
+@keyframes polaroid-eject {
+  0%   { transform: translateY(30px) rotate(0deg) scale(0.96); opacity: 0; }
+  10%  { opacity: 0.6; }
+  25%  { transform: translateY(-10px) rotate(-0.8deg) scale(0.98); opacity: 1; }
+  40%  { transform: translateY(-35px) rotate(0.5deg) scale(1); }
+  60%  { transform: translateY(-55px) rotate(-0.4deg); }
+  80%  { transform: translateY(-68px) rotate(0.2deg); }
+  100% { transform: translateY(-64px) rotate(0deg); opacity: 1; }
+}
+.animate-polaroid-eject {
+  animation: polaroid-eject 1.8s cubic-bezier(0.16, 0.72, 0.34, 1) forwards;
+}
+
+/* 8. FLASH */
+@keyframes flash {
+  0%   { opacity: 0; }
+  12%  { opacity: 0.95; }
+  100% { opacity: 0; }
+}
+.animate-flash { animation: flash 0.45s ease-out forwards; }
+
+/* 9. GALLERY SLIDE-UP */
+@keyframes slide-up-in {
+  0%   { transform: translateY(40px) scale(0.92); opacity: 0; }
+  100% { transform: translateY(0) scale(1); opacity: 1; }
+}
+.animate-slide-up { animation: slide-up-in 0.7s ease-out forwards; }
+
+/* 10. PHOTO DEVELOPING */
+@keyframes photo-develop {
+  0%   { filter: blur(15px) brightness(3.0) saturate(0) contrast(0.6); opacity: 0.15; }
+  15%  { filter: blur(8px) brightness(2.2) saturate(0.1) contrast(0.75); opacity: 0.4; }
+  40%  { filter: blur(3px) brightness(1.4) saturate(0.4) contrast(1.0); opacity: 0.7; }
+  70%  { filter: blur(0.8px) brightness(1.08) saturate(0.8) contrast(1.15); opacity: 0.92; }
+  100% { filter: blur(0) brightness(1) saturate(1) contrast(1); opacity: 1; }
+}
+.animate-photo-develop { animation: photo-develop 2s ease-out forwards; }
+
+/* 11. FILM GRAIN OVERLAY */
+.film-grain {
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='grain'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='5' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23grain)'/%3E%3C/svg%3E");
+  background-size: 100px 100px;
+  opacity: 0.14; mix-blend-mode: multiply; border-radius: inherit;
+}
+
+/* 12. SLIDER */
+input[type="range"].sketch-slider {
+  -webkit-appearance: none; appearance: none;
+  height: 3px; border-radius: 999px;
+  background: linear-gradient(to right, #93c5fd, #d6d3d1 50%, #fdba74);
+  outline: none; cursor: pointer; opacity: 0.6;
+}
+input[type="range"].sketch-slider::-webkit-slider-thumb {
+  -webkit-appearance: none; appearance: none;
+  width: 14px; height: 14px; border-radius: 50%;
+  background: var(--charcoal); border: 1.5px solid var(--charcoal-light);
+  cursor: grab; transition: transform 0.12s;
+}
+input[type="range"].sketch-slider::-webkit-slider-thumb:active { transform: scale(1.15); cursor: grabbing; }
+input[type="range"].sketch-slider::-moz-range-thumb {
+  width: 14px; height: 14px; border-radius: 50%;
+  background: var(--charcoal); border: 1.5px solid var(--charcoal-light); cursor: grab;
+}
+
+/* 13. LENS PULSE */
+@keyframes lens-pulse {
+  0%, 100% { opacity: 0.12; transform: scale(1); }
+  50%      { opacity: 0.22; transform: scale(1.02); }
+}
+.lens-glow { animation: lens-pulse 3.5s ease-in-out infinite; }
+
+/* 14. POLAROID FRAME — double pencil line */
+.polaroid-frame { position: relative; }
+.polaroid-frame::before {
+  content: "";
+  position: absolute; inset: -1px;
+  border: 1.2px solid var(--pencil);
+  border-radius: 5px 4px 5px 4px / 4px 5px 4px 5px;
+  pointer-events: none; opacity: 0.3;
+  filter: url(#pencil-wobble);
+}
+.polaroid-frame::after {
+  content: "";
+  position: absolute; inset: -2.5px 0px 0px -2px;
+  border: 0.8px solid var(--pencil);
+  border-radius: 4px 6px 3px 5px / 5px 4px 6px 3px;
+  pointer-events: none; opacity: 0.18;
+  filter: url(#pencil-wobble);
+}
+
+/* 15. DOT GRID */
+.bg-dot-pattern {
+  background-image: radial-gradient(circle, rgba(140,128,110,0.06) 1.5px, transparent 1.5px);
+  background-size: 24px 24px;
+}
+
+/* 16. SKETCH-BORDER (buttons) */
+.sketch-border { position: relative; }
+.sketch-border::after {
+  content: "";
+  position: absolute; inset: -1px;
+  border: 1px solid var(--pencil);
+  border-radius: inherit; opacity: 0.35;
+  pointer-events: none;
+  filter: url(#pencil-wobble);
+}
+
+/* 17. SHUTTER TRACK — oval slide-to-shoot bar */
+.shutter-track {
+  position: relative;
+  background: rgba(240, 233, 222, 0.35);
+  border-radius: 999px;
+  transition: background 0.2s;
+}
+.shutter-track:hover:not(:disabled) {
+  background: rgba(240, 233, 222, 0.55);
+}
+.shutter-track:active:not(:disabled) {
+  background: rgba(230, 220, 205, 0.6);
+}
+.shutter-track::before {
+  content: "";
+  position: absolute; inset: -1px;
+  border: 1.6px solid var(--pencil);
+  border-radius: 999px;
+  pointer-events: none; z-index: 2; opacity: 0.4;
+  filter: url(#pencil-wobble);
+}
+.shutter-track::after {
+  content: "";
+  position: absolute; inset: -3px 0px -1px -2px;
+  border: 1px solid var(--pencil);
+  border-radius: 999px;
+  pointer-events: none; z-index: 2; opacity: 0.2;
+  filter: url(#pencil-wobble);
+}
+
+/* ═══ 18. INTRO BOOTH — Clean Pencil Style ═══ */
+
+/* Curtain stripe pattern — hand-ruled vertical lines */
+.curtain-stripes {
+  background-image:
+    repeating-linear-gradient(
+      90deg,
+      rgba(74,68,64,0.10) 0px,
+      rgba(74,68,64,0.10) 2px,
+      transparent 2px,
+      transparent 7px
+    ),
+    repeating-linear-gradient(
+      90deg,
+      rgba(74,68,64,0.04) 0px,
+      rgba(74,68,64,0.04) 1px,
+      transparent 1px,
+      transparent 14px
+    );
+}
+
+/* Curtain fold shadows */
+.curtain-folds {
+  background:
+    repeating-linear-gradient(
+      90deg,
+      transparent 0px,
+      transparent 22px,
+      rgba(0,0,0,0.025) 22px,
+      rgba(0,0,0,0.04) 24px,
+      transparent 26px
+    );
+}
+
+/* Mini polaroid on booth wall */
+.mini-polaroid {
+  position: relative;
+  background: var(--paper);
+  border-radius: 2px;
+  padding: 3px 3px 9px 3px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+}
+.mini-polaroid::before {
+  content: "";
+  position: absolute; inset: -1px;
+  border: 1px solid var(--pencil);
+  border-radius: 2px;
+  pointer-events: none; opacity: 0.22;
+}
+
+/* Enter text subtle breathe */
+@keyframes enter-breathe {
+  0%, 100% { opacity: 0.6; }
+  50%      { opacity: 1; }
+}
+.animate-enter-breathe {
+  animation: enter-breathe 2.5s ease-in-out infinite;
+}
+
+/* Booth clean pencil border */
+.booth-border {
+  position: relative;
+}
+.booth-border::before {
+  content: "";
+  position: absolute; inset: -2px;
+  border: 2px solid var(--pencil);
+  border-radius: 4px;
+  pointer-events: none; z-index: 2; opacity: 0.45;
+}
+.booth-border::after {
+  content: "";
+  position: absolute; inset: -4px -3px -3px -4px;
+  border: 1.2px solid var(--pencil);
+  border-radius: 5px;
+  pointer-events: none; z-index: 2; opacity: 0.18;
+}
+
+/* Sign board clean border */
+.sign-border {
+  position: relative;
+}
+.sign-border::before {
+  content: "";
+  position: absolute; inset: -1px;
+  border: 1.6px solid var(--pencil);
+  border-radius: 3px;
+  pointer-events: none; z-index: 2; opacity: 0.4;
+}
+
+/* Stool seat — ellipse shape */
+.stool-seat {
+  position: relative;
+  background: linear-gradient(160deg, #c8baa8 0%, #b5a594 50%, #a89884 100%);
+  border-radius: 50%;
+  box-shadow: inset 0 2px 6px rgba(0,0,0,0.08), 0 2px 4px rgba(0,0,0,0.06);
+}
+.stool-seat::before {
+  content: "";
+  position: absolute; inset: -1px;
+  border: 1.4px solid var(--pencil);
+  border-radius: 50%;
+  pointer-events: none; opacity: 0.35;
+}
+
+/* Interior wall subtle texture */
+.interior-wall {
+  background: linear-gradient(180deg, #383330 0%, #2e2a26 40%, #262220 100%);
+}
+.interior-wall::after {
+  content: "";
+  position: absolute; inset: 0;
+  pointer-events: none;
+  opacity: 0.04;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 150px 150px;
+  mix-blend-mode: overlay;
+}
